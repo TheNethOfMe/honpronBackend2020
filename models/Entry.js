@@ -13,16 +13,16 @@ const EntrySchema = new mongoose.Schema({
   },
   entryType: {
     type: String,
-    required: true,
+    required: [true, "The entry must be a podcast, video, or blog."],
     enum: ["podcast", "video", "blog"]
   },
   description: {
     type: String,
-    required: true
+    required: [true, "Please enter a description."]
   },
   series: {
     type: String,
-    required: true
+    required: [true, "Series is required."]
   },
   games: {
     type: [String]
