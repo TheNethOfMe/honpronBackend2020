@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const EntrySchema = new mongoose.Schema({
   title: {
@@ -37,6 +38,14 @@ const EntrySchema = new mongoose.Schema({
   duration: {
     type: String
   }
+});
+
+// crate slug from title
+EntrySchema.pre("save", function(next) {
+  this.slug = slugify(this.title, {
+    lower: true
+  });
+  next();
 });
 
 module.exports = mongoose.model("Entry", EntrySchema);
