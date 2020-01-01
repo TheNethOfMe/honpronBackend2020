@@ -22,7 +22,8 @@ const EntrySchema = new mongoose.Schema({
     required: [true, "Please enter a description."]
   },
   series: {
-    type: String,
+    type: mongoose.Schema.ObjectId,
+    ref: "Series",
     required: [true, "Series is required."]
   },
   games: {
