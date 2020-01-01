@@ -6,64 +6,7 @@ const asyncHandler = require("../middleware/async");
 // @route   GET /api/v1/entries
 // @access  Public
 exports.getEntries = asyncHandler(async (req, res, next) => {
-  let query;
-
-  // make copy of query fields
-  const reqQuery = { ...req.query };
-
-  // remove certain fields from reqQuery object
-  const removeFields = ["sort", "page", "limit", "games"];
-  removeFields.forEach(param => delete reqQuery[param]);
-
-  // create query string and format operators
-  let queryStr = JSON.stringify(reqQuery);
-  queryStr = queryStr.replace(/\b(in)\b/gi, match => `$${match}`);
-  let queryObj = JSON.parse(queryStr);
-  if (req.query.games) {
-    queryObj.games = { $regex: req.query.games, $options: "i" };
-    console.log(queryObj);
-  }
-
-  // sort query results
-  let sortBy;
-  if (req.query.sort) {
-    sortBy = req.query.sort.split(",").join(" ");
-  } else {
-    sortBy = "-createdAt";
-  }
-
-  // pagination
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 10;
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const total = await Entry.countDocuments();
-
-  // construct and execute query
-  query = Entry.find(queryObj).sort(sortBy);
-  query = query.skip(startIndex).limit(limit);
-  const entries = await query;
-
-  // pagination result
-  const pagination = {};
-
-  if (endIndex < total) {
-    pagination.next = {
-      page: page + 1,
-      limit
-    };
-  }
-
-  if (startIndex > 0) {
-    pagination.prev = {
-      page: page - 1,
-      limit
-    };
-  }
-
-  res
-    .status(200)
-    .json({ success: true, count: entries.length, pagination, data: entries });
+  res.status(200).json(res.advancedEntries);
 });
 
 // @desc    Create an Entry

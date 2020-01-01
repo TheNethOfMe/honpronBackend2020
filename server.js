@@ -11,12 +11,14 @@ connectDB();
 
 // Route files
 const entries = require("./routes/entries");
+const series = require("./routes/series");
 
 const app = express();
 app.use(express.json());
 
 // Mount routers
 app.use("/api/v1/entries", entries);
+app.use("/api/v1/series", series);
 
 app.use(errorHandler);
 
