@@ -7,11 +7,11 @@ const {
   deleteEntry
 } = require("../controllers/entries");
 const router = express.Router();
-const advancedEntries = require("../middleware/advancedEntries");
+const { advancedEntries } = require("../middleware/advancedQuery");
 
 router
   .route("/")
-  .get(advancedEntries(false), getEntries)
+  .get(advancedEntries(), getEntries)
   .post(createEntry);
 
 router

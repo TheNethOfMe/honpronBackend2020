@@ -33,6 +33,13 @@ SeriesSchema.pre("save", function(next) {
   next();
 });
 
+// cascade delete entries for series when series is deleted
+SeriesSchema.pre("remove", async function(next) {
+  console.log("Deleting entries with this id");
+  await this.model("Entry").deleteMany({ series: this._id });
+  next();
+});
+
 // virtuals
 SeriesSchema.virtual("entries", {
   ref: "Entry",

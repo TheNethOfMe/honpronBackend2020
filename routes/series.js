@@ -2,16 +2,22 @@ const express = require("express");
 const {
   getSeries,
   createSeries,
-  getOneSeries
+  getOneSeriesWithEntries,
+  updateSeries,
+  deleteSeries
 } = require("../controllers/series");
 const router = express.Router();
-const advancedEntries = require("../middleware/advancedEntries");
+const { advancedSeries } = require("../middleware/advancedQuery");
 
 router
   .route("/")
   .get(getSeries)
   .post(createSeries);
 
-router.route("/:id").get(advancedEntries(true), getOneSeries);
+router
+  .route("/:id")
+  .get(advancedSeries(), getOneSeriesWithEntries)
+  .put(updateSeries)
+  .delete(deleteSeries);
 
 module.exports = router;
