@@ -27,7 +27,7 @@ exports.getOneSeriesWithEntries = asyncHandler(async (req, res, next) => {
 
 // @desc    Update Series
 // @route   PUT /api/v1/series/:id
-// @access  Private
+// @access  Private (ADMIN ONLY)
 exports.updateSeries = asyncHandler(async (req, res, next) => {
   const series = await Series.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -41,6 +41,9 @@ exports.updateSeries = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: series });
 });
 
+// @desc    Delete Series (and associated entries)
+// @route   DELETE /api/v1/series/:id
+// @access  Private (ADMIN ONLY)
 exports.deleteSeries = asyncHandler(async (req, res, next) => {
   const series = await Series.findById(req.params.id);
   if (!series) {

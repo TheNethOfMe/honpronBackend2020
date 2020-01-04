@@ -4,10 +4,13 @@ const {
   createEntry,
   getEntry,
   updateEntry,
-  deleteEntry
+  deleteEntry,
+  entryPhotoUpload
 } = require("../controllers/entries");
 const router = express.Router();
 const { advancedEntries } = require("../middleware/advancedQuery");
+
+router.route("/:id/photo").put(entryPhotoUpload);
 
 router
   .route("/")
