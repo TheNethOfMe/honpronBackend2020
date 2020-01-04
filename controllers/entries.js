@@ -28,6 +28,7 @@ exports.getEntry = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`Entry not found with id of ${req.params.id}`, 404)
     );
   }
+  res.status(201).json({ success: true, data: entry });
 });
 
 // @desc    Update one Entry
@@ -48,7 +49,7 @@ exports.updateEntry = asyncHandler(async (req, res, next) => {
 
 // @desc    Delete one Entry
 // @route   DELETE /api/v1/entries/:id
-// @access  Private
+// @access  Private (ADMIN ONLY)
 exports.deleteEntry = asyncHandler(async (req, res, next) => {
   const entry = await Entry.findByIdAndDelete(req.params.id);
   if (!entry) {
@@ -61,7 +62,7 @@ exports.deleteEntry = asyncHandler(async (req, res, next) => {
 
 // @desc    Upload photo
 // @route   PUT /api/v1/entries/:id/photo
-// @access  Private
+// @access  Private (ADMIN ONLY)
 exports.entryPhotoUpload = asyncHandler(async (req, res, next) => {
   const entry = await Entry.findById(req.params.id);
   if (!entry) {
