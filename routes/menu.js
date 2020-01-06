@@ -1,10 +1,10 @@
 const express = require("express");
+const router = express.Router();
 const {
   getMenu,
   createMenuItem,
   deleteMenuItem
 } = require("../controllers/menu");
-const router = express.Router();
 
 router
   .route("/")

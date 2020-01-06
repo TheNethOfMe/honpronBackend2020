@@ -27,13 +27,13 @@ const formatSelectAndSort = (select, sort) => {
 };
 
 // create data pertaining to pagination
-const createPaginationData = async (page, limit, queryObjToCount) => {
+const createPaginationData = async (page, limit, queryObjToCount, model) => {
   let result = {};
   result.page = parseInt(page, 10) || 1;
   result.limit = parseInt(limit, 10) || 10;
   result.startIndex = (result.page - 1) * result.limit;
   result.endIndex = result.page * result.limit;
-  result.total = await Entry.countDocuments(queryObjToCount);
+  result.total = await model.countDocuments(queryObjToCount);
   return result;
 };
 
@@ -56,7 +56,7 @@ const returnPagination = data => {
   return result;
 };
 
-exports.advancedEntries = () => async (req, res, next) => {
+exports.advancedQuery = model => async (req, res, next) => {
   let query;
   let queryObj;
 
@@ -66,7 +66,7 @@ exports.advancedEntries = () => async (req, res, next) => {
 
   // Construct query
   queryObj = formatQuery(reqQuery);
-  query = Entry.find(queryObj);
+  query = model.find(queryObj);
 
   // Add select and sort to query where applicable
   const selectAndSort = formatSelectAndSort(req.query.select, req.query.sort);
@@ -79,7 +79,8 @@ exports.advancedEntries = () => async (req, res, next) => {
   const pageData = await createPaginationData(
     req.query.page,
     req.query.limit,
-    queryObj
+    queryObj,
+    model
   );
   query = query.skip(pageData.startIndex).limit(pageData.limit);
 
@@ -89,7 +90,7 @@ exports.advancedEntries = () => async (req, res, next) => {
   // Pagination result
   const pagination = returnPagination(pageData);
 
-  res.advancedEntries = {
+  res.advancedData = {
     success: true,
     count: results.length,
     pagination,
@@ -124,7 +125,8 @@ exports.advancedSeries = () => async (req, res, next) => {
   const pageData = await createPaginationData(
     req.query.page,
     req.query.limit,
-    queryObj
+    queryObj,
+    Entry
   );
 
   // create populate options object and complete populate query
