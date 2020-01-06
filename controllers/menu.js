@@ -1,6 +1,6 @@
 const Menu = require("../models/Menu");
 const ErrorResponse = require("../utils/errorResponse");
-const asyncHandler = require("../middleware/async");
+const asyncHandler = require("../middleware/asyncHandler");
 
 // @desc    Get full Menu
 // @route   GET /api/v1/menu

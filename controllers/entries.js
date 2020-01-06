@@ -1,13 +1,13 @@
 const Entry = require("../models/Entry");
 const ErrorResponse = require("../utils/errorResponse");
-const asyncHandler = require("../middleware/async");
+const asyncHandler = require("../middleware/asyncHandler");
 const path = require("path");
 
 // @desc    Get all Entries
 // @route   GET /api/v1/entries
 // @access  Public
 exports.getEntries = asyncHandler(async (req, res, next) => {
-  res.status(200).json(res.advancedEntries);
+  res.status(200).json(res.advancedData);
 });
 
 // @desc    Create an Entry

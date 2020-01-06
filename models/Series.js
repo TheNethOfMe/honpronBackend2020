@@ -17,6 +17,10 @@ const SeriesSchema = new mongoose.Schema(
     },
     slug: {
       type: String
+    },
+    dateAdded: {
+      type: Date,
+      default: Date.now
     }
   },
   {

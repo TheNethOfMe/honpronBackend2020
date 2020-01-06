@@ -16,6 +16,7 @@ const entries = require("./routes/entries");
 const series = require("./routes/series");
 const menu = require("./routes/menu");
 const auth = require("./routes/auth");
+const users = require("./routes/users");
 
 const app = express();
 app.use(express.json());
@@ -31,6 +32,7 @@ app.use("/api/v1/entries", entries);
 app.use("/api/v1/series", series);
 app.use("/api/v1/menu", menu);
 app.use("/api/v1/auth", auth);
+app.use("/api/v1/users", users);
 
 app.use(errorHandler);
 

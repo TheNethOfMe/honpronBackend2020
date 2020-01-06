@@ -21,8 +21,7 @@ const UserSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["user", "blacklisted", "blocked"],
-    default: "user",
-    select: false
+    default: "user"
   },
   password: {
     type: String,
@@ -32,7 +31,7 @@ const UserSchema = new mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
-  createdAt: {
+  dateAdded: {
     type: Date,
     default: Date.now
   }

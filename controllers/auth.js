@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const User = require("../models/User");
 const ErrorResponse = require("../utils/errorResponse");
-const asyncHandler = require("../middleware/async");
+const asyncHandler = require("../middleware/asyncHandler");
 const sendEmail = require("../utils/sendEmail");
 const sendTokenResponse = require("../utils/sendTokenResponse");
 
@@ -121,7 +121,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Email could not be sent.", 500));
   }
 
-  res.status(200).json({ success: true, data: user });
+  res.status(200).json({ success: true, data: "Email Sent" });
 });
 
 // @desc    Reset Password

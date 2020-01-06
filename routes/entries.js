@@ -8,13 +8,14 @@ const {
   deleteEntry,
   entryPhotoUpload
 } = require("../controllers/entries");
-const { advancedEntries } = require("../middleware/advancedQuery");
+const Entry = require("../models/Entry");
+const { advancedQuery } = require("../middleware/advancedQuery");
 
 router.route("/:id/photo").put(entryPhotoUpload);
 
 router
   .route("/")
-  .get(advancedEntries(), getEntries)
+  .get(advancedQuery(Entry), getEntries)
   .post(createEntry);
 
 router
