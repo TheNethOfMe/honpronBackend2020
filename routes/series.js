@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 const {
   getSeries,
   createSeries,
@@ -6,7 +7,6 @@ const {
   updateSeries,
   deleteSeries
 } = require("../controllers/series");
-const router = express.Router();
 const { advancedSeries } = require("../middleware/advancedQuery");
 
 router
