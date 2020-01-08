@@ -13,7 +13,7 @@ exports.getEntries = asyncHandler(async (req, res, next) => {
 
 // @desc    Create an Entry
 // @route   POST /api/v1/entries
-// @access  Private (ADMIN ONLY)
+// @access  Private/Admin
 exports.createEntry = asyncHandler(async (req, res, next) => {
   const entry = await Entry.create(req.body);
   res.status(201).json({ success: true, data: entry });
@@ -47,7 +47,7 @@ exports.getEntry = asyncHandler(async (req, res, next) => {
 
 // @desc    Update one Entry
 // @route   PUT /api/v1/entries/:id
-// @access  Private
+// @access  Private/Admin
 exports.updateEntry = asyncHandler(async (req, res, next) => {
   const entry = await Entry.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -63,7 +63,7 @@ exports.updateEntry = asyncHandler(async (req, res, next) => {
 
 // @desc    Delete one Entry
 // @route   DELETE /api/v1/entries/:id
-// @access  Private (ADMIN ONLY)
+// @access  Private/Admin
 exports.deleteEntry = asyncHandler(async (req, res, next) => {
   const entry = await Entry.findByIdAndDelete(req.params.id);
   if (!entry) {
@@ -76,7 +76,7 @@ exports.deleteEntry = asyncHandler(async (req, res, next) => {
 
 // @desc    Upload photo
 // @route   PUT /api/v1/entries/:id/photo
-// @access  Private (ADMIN ONLY)
+// @access  Private/Admin
 exports.entryPhotoUpload = asyncHandler(async (req, res, next) => {
   const entry = await Entry.findById(req.params.id);
   if (!entry) {

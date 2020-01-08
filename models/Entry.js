@@ -44,6 +44,10 @@ const EntrySchema = new mongoose.Schema({
   gameList: {
     type: mongoose.Schema.ObjectId,
     ref: "GameList"
+  },
+  // blog only
+  blog: {
+    type: String
   }
 });
 

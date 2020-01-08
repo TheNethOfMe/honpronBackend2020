@@ -3,7 +3,7 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
 const getFormattedGameList = require("../utils/getFormattedGameList");
 
-// @desc    Get one List formated
+// @desc    Get Current List formated
 // @route   GET /api/v1/gamelist/current
 // @access  Public
 exports.getCurrentList = asyncHandler(async (req, res, next) => {
@@ -15,7 +15,7 @@ exports.getCurrentList = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: formattedList });
 });
 
-// @desc    Get all Gamelist (no chunks)
+// @desc    Get all Gamelist titles
 // @route   GET /api/v1/gamelist
 // @access  Private/Admin
 exports.getAllGameLists = asyncHandler(async (req, res, next) => {
@@ -42,7 +42,7 @@ exports.getOneGameList = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: list });
 });
 
-// @desc    Update One Gamelist data unformated
+// @desc    Update One Gamelist
 // @route   PUT /api/v1/gamelist/:id
 // @access  Private/Admin
 exports.updateGameList = asyncHandler(async (req, res, next) => {

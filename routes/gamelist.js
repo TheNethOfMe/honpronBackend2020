@@ -8,18 +8,19 @@ const {
   updateGameList,
   deleteGameList
 } = require("../controllers/gamelist");
+const { protect, adminOnly } = require("../middleware/auth");
 
 router.route("/current").get(getCurrentList);
 
 router
   .route("/")
-  .get(getAllGameLists)
-  .post(createGameList);
+  .get(protect, adminOnly(), getAllGameLists)
+  .post(protect, adminOnly(), createGameList);
 
 router
   .route("/:id")
-  .get(getOneGameList)
-  .put(updateGameList)
-  .delete(deleteGameList);
+  .get(protect, adminOnly(), getOneGameList)
+  .put(protect, adminOnly(), updateGameList)
+  .delete(protect, adminOnly(), deleteGameList);
 
 module.exports = router;

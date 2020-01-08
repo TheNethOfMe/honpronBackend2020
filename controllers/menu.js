@@ -12,7 +12,7 @@ exports.getMenu = asyncHandler(async (req, res, next) => {
 
 // @desc    Create a Menu Item
 // @route   POST /api/v1/menu
-// @access  Private (ADMIN ONLY)
+// @access  Private/Admin
 exports.createMenuItem = asyncHandler(async (req, res, next) => {
   const menu = await Menu.create(req.body);
   res.status(201).json({ success: true, data: menu });
@@ -20,7 +20,7 @@ exports.createMenuItem = asyncHandler(async (req, res, next) => {
 
 // @desc    Delete one Menu Item
 // @route   DELETE /api/v1/menu/:id
-// @access  Private (ADMIN ONLY)
+// @access  Private/Admin
 exports.deleteMenuItem = asyncHandler(async (req, res, next) => {
   const menu = await Menu.findByIdAndDelete(req.params.id);
   if (!menu) {

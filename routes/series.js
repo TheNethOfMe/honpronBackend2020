@@ -4,20 +4,29 @@ const {
   getSeries,
   createSeries,
   getOneSeriesWithEntries,
+  getOneSeries,
   updateSeries,
   deleteSeries
 } = require("../controllers/series");
-const { advancedSeries } = require("../middleware/advancedQuery");
+const Series = require("../models/Series");
+const {
+  advancedQuery,
+  advancedSeries
+} = require("../middleware/advancedQuery");
+
+const { protect, adminOnly } = require("../middleware/auth");
+
+router.get("/:id/noentry", getOneSeries);
 
 router
   .route("/")
-  .get(getSeries)
-  .post(createSeries);
+  .get(advancedQuery(Series), getSeries)
+  .post(protect, adminOnly(), createSeries);
 
 router
   .route("/:id")
   .get(advancedSeries(), getOneSeriesWithEntries)
-  .put(updateSeries)
-  .delete(deleteSeries);
+  .put(protect, adminOnly(), updateSeries)
+  .delete(protect, adminOnly(), deleteSeries);
 
 module.exports = router;

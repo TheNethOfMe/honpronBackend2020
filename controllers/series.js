@@ -6,13 +6,12 @@ const asyncHandler = require("../middleware/asyncHandler");
 // @route   GET /api/v1/series
 // @access  Public
 exports.getSeries = asyncHandler(async (req, res, next) => {
-  const series = await Series.find();
-  res.status(200).json({ success: true, count: series.length, data: series });
+  res.status(200).json(res.advancedData);
 });
 
 // @desc    Create an Series
 // @route   POST /api/v1/series
-// @access  Private (ADMIN ONLY)
+// @access  Private/Admin
 exports.createSeries = asyncHandler(async (req, res, next) => {
   const series = await Series.create(req.body);
   res.status(201).json({ success: true, data: series });
@@ -25,9 +24,17 @@ exports.getOneSeriesWithEntries = asyncHandler(async (req, res, next) => {
   res.status(200).json(res.advancedSeries);
 });
 
+// @desc    Get one Series with no enty data
+// @route   GET /api/v1/series/:id/noentry
+// @access  Public
+exports.getOneSeries = asyncHandler(async (req, res, next) => {
+  const series = await Series.findById(req.params.id);
+  res.status(200).json({ success: true, count: series.length, data: series });
+});
+
 // @desc    Update Series
 // @route   PUT /api/v1/series/:id
-// @access  Private (ADMIN ONLY)
+// @access  Private/Admin
 exports.updateSeries = asyncHandler(async (req, res, next) => {
   const series = await Series.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -43,7 +50,7 @@ exports.updateSeries = asyncHandler(async (req, res, next) => {
 
 // @desc    Delete Series (and associated entries)
 // @route   DELETE /api/v1/series/:id
-// @access  Private (ADMIN ONLY)
+// @access  Private/Admin
 exports.deleteSeries = asyncHandler(async (req, res, next) => {
   const series = await Series.findById(req.params.id);
   if (!series) {

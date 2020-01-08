@@ -3,7 +3,7 @@ const Series = require("../models/Series");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
-const removeFields = ["select", "sort", "page", "limit"];
+const removeFields = ["select", "sort", "page", "limit", "search"];
 
 // format Query from req query data
 const formatQuery = queryData => {
@@ -65,7 +65,11 @@ exports.advancedQuery = model => async (req, res, next) => {
   removeFields.forEach(param => delete reqQuery[param]);
 
   // Construct query
-  queryObj = formatQuery(reqQuery);
+  queryObj = formatQuery(reqQuery, req.query.search);
+  if (req.query.search) {
+    queryObj.games = { $regex: req.query.search, $options: "i" };
+  }
+  console.log("Hi", queryObj);
   query = model.find(queryObj);
 
   // Add select and sort to query where applicable
