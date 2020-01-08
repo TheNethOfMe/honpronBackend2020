@@ -2,6 +2,7 @@ const Entry = require("../models/Entry");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
 const path = require("path");
+const getFormattedGameList = require("../utils/getFormattedGameList");
 
 // @desc    Get all Entries
 // @route   GET /api/v1/entries
@@ -22,13 +23,26 @@ exports.createEntry = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/entries/:id
 // @access  Public
 exports.getEntry = asyncHandler(async (req, res, next) => {
-  const entry = await Entry.findById(req.params.id);
+  const entry = await Entry.findById(req.params.id).populate({
+    path: "gameList",
+    select: "list"
+  });
   if (!entry) {
     return next(
       new ErrorResponse(`Entry not found with id of ${req.params.id}`, 404)
     );
   }
-  res.status(201).json({ success: true, data: entry });
+  if (entry.gameList) {
+    let result = { ...entry._doc };
+    delete result.gameList;
+    const formattedList = getFormattedGameList(
+      entry.gameList.list,
+      entry.episode
+    );
+    result.formattedList = formattedList;
+    return res.status(200).json({ success: true, data: result });
+  }
+  res.status(200).json({ success: true, data: entry });
 });
 
 // @desc    Update one Entry
