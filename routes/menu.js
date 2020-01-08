@@ -6,11 +6,13 @@ const {
   deleteMenuItem
 } = require("../controllers/menu");
 
+const { protect, adminOnly } = require("../middleware/auth");
+
 router
   .route("/")
   .get(getMenu)
-  .post(createMenuItem);
+  .post(protect, adminOnly(), createMenuItem);
 
-router.route("/:id").delete(deleteMenuItem);
+router.delete("/", protect, adminOnly(), deleteMenuItem);
 
 module.exports = router;

@@ -38,6 +38,16 @@ const EntrySchema = new mongoose.Schema({
   },
   duration: {
     type: String
+  },
+  // Snescapades only
+  episode: Number,
+  gameList: {
+    type: mongoose.Schema.ObjectId,
+    ref: "GameList"
+  },
+  // blog only
+  blog: {
+    type: String
   }
 });
 

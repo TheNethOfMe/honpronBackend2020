@@ -28,7 +28,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Grant access to specific roles
+// Grant access to admins only
 exports.adminOnly = () => {
   return (req, res, next) => {
     if (req.user.status !== "admin") {
