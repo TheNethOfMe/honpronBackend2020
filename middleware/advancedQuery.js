@@ -69,7 +69,6 @@ exports.advancedQuery = model => async (req, res, next) => {
   if (req.query.search) {
     queryObj.games = { $regex: req.query.search, $options: "i" };
   }
-  console.log("Hi", queryObj);
   query = model.find(queryObj);
 
   // Add select and sort to query where applicable

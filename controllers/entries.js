@@ -23,10 +23,14 @@ exports.createEntry = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/entries/:id
 // @access  Public
 exports.getEntry = asyncHandler(async (req, res, next) => {
-  const entry = await Entry.findById(req.params.id).populate({
-    path: "gameList",
-    select: "list"
-  });
+  const entry = await Entry.findById(req.params.id)
+    .populate({
+      path: "gameList",
+      select: "list"
+    })
+    .populate({
+      path: "comments"
+    });
   if (!entry) {
     return next(
       new ErrorResponse(`Entry not found with id of ${req.params.id}`, 404)
