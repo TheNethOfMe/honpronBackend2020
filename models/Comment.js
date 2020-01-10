@@ -20,7 +20,7 @@ const CommentSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
-  isPublic: {
+  isApproved: {
     type: Boolean,
     default: false
   }

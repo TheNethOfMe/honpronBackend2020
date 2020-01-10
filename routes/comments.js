@@ -23,7 +23,10 @@ router.get(
 router
   .route("/")
   .get(protect, getMyComments)
-  .post(protect, createComment)
+  .post(protect, createComment);
+
+router
+  .route("/:id")
   .put(protect, adminOnly, updateComment)
   .delete(protect, deleteComment);
 

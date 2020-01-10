@@ -21,3 +21,5 @@ router
   .get(protect, adminOnly(), getSingleTicket)
   .put(protect, adminOnly(), updateTicket)
   .delete(protect, adminOnly(), deleteTicket);
+
+module.exports = router;

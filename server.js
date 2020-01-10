@@ -18,6 +18,8 @@ const menu = require("./routes/menu");
 const auth = require("./routes/auth");
 const users = require("./routes/users");
 const gamelist = require("./routes/gamelist");
+const tickets = require("./routes/tickets");
+const comments = require("./routes/comments");
 
 const app = express();
 app.use(express.json());
@@ -35,6 +37,8 @@ app.use("/api/v1/menu", menu);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/users", users);
 app.use("/api/v1/gamelist", gamelist);
+app.use("/api/v1/tickets", tickets);
+app.use("/api/v1/comments", comments);
 
 app.use(errorHandler);
 

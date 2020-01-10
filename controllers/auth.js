@@ -46,7 +46,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @desc    Logout currently logged in user
 // @route   GET /api/v1/auth/logout
 // @access  Private
-exports.getMe = asyncHandler(async (req, res, next) => {
+exports.logout = asyncHandler(async (req, res, next) => {
   res.cookie("token", "none", {
     expires: new Date(Date.now + 10 * 1000),
     httpOnly: true
@@ -57,7 +57,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @desc    Get current logged in user
 // @route   GET /api/v1/auth/me
 // @access  Private
-exports.logout = asyncHandler(async (req, res, next) => {
+exports.getMe = asyncHandler(async (req, res, next) => {
   const user = {
     name: req.user.name,
     email: req.user.email

@@ -2,6 +2,13 @@ const Comment = require("../models/Comment");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
 
+// @desc    Get all Comments
+// @route   GET /api/v1/comments/admin
+// @access  Private/Admin
+exports.getAllComments = asyncHandler(async (req, res, next) => {
+  res.status(200).json(res.advancedData);
+});
+
 // @desc    Get all Comments made by user
 // @route   GET /api/v1/comments
 // @access  Private/Own Resources
@@ -15,13 +22,6 @@ exports.getMyComments = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json({ success: true, count: comments.length, data: comments });
-});
-
-// @desc    Get all Comments
-// @route   GET /api/v1/comments/admin
-// @access  Private/Admin
-exports.getAllComments = asyncHandler(async (req, res, next) => {
-  res.status(200).json(res.advancedData);
 });
 
 // @desc    Create a Comment
