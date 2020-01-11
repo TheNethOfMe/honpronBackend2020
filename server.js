@@ -1,8 +1,13 @@
+const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
-const path = require("path");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const xss = require("xss-clean");
+const rateLimit = require("express-rate-limit");
+const hpp = require("hpp");
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -28,6 +33,16 @@ app.use(express.json());
 // Middleware npm packages
 app.use(fileupload());
 app.use(cookieParser());
+app.use(mongoSanitize());
+app.use(helmet());
+app.use(xss());
+app.use(hpp());
+
+// rate limiting
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 100
+});
 
 // Set static folder
 app.use(express.static(path.join(__dirname, "public")));
