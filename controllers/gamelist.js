@@ -53,7 +53,7 @@ exports.updateGameList = asyncHandler(async (req, res, next) => {
   if (!list) {
     return next(new ErrorResponse("Game list not found.", 404));
   }
-  res.status(200).json({ success: true, data: series });
+  res.status(200).json({ success: true, data: list });
 });
 
 // @desc    Delete Game List

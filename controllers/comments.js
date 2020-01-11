@@ -41,6 +41,7 @@ exports.createComment = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/comments/:id
 // @access  Private/Admin
 exports.updateComment = asyncHandler(async (req, res, next) => {
+  console.log("Hit");
   const comment = await Comment.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true

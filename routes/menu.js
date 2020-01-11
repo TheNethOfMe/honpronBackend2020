@@ -13,6 +13,6 @@ router
   .get(getMenu)
   .post(protect, adminOnly(), createMenuItem);
 
-router.delete("/", protect, adminOnly(), deleteMenuItem);
+router.delete("/:id", protect, adminOnly(), deleteMenuItem);
 
 module.exports = router;

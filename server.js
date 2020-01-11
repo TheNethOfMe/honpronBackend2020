@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const fileupload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 const path = require("path");
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
@@ -24,8 +25,9 @@ const comments = require("./routes/comments");
 const app = express();
 app.use(express.json());
 
-// File uploading
+// Middleware npm packages
 app.use(fileupload());
+app.use(cookieParser());
 
 // Set static folder
 app.use(express.static(path.join(__dirname, "public")));

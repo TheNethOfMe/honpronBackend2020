@@ -17,8 +17,7 @@ const TicketSchema = new mongoose.Schema({
   },
   colorCode: {
     type: String,
-    enum: ["blue", "yellow", "red", "black"],
-    required: true
+    enum: ["blue", "yellow", "red", "black"]
   },
   closed: {
     type: Boolean,

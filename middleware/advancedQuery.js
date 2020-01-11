@@ -73,9 +73,12 @@ exports.advancedQuery = model => async (req, res, next) => {
 
   // Add select and sort to query where applicable
   const selectAndSort = formatSelectAndSort(req.query.select, req.query.sort);
-  if (selectAndSort.select) {
-    query = query.select(selectAndSort.select);
-  }
+  // if (selectAndSort.select) {
+  //   query = query.select(selectAndSort.select);
+  // }
+  query = query.select(
+    `-blog${!!selectAndSort.select ? " " + selectAndSort.select : ""}`
+  );
   query = query.sort(selectAndSort.sort);
 
   // Pagination

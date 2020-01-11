@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const {
   getMyComments,
   getAllComments,
@@ -15,7 +15,7 @@ const { protect, adminOnly } = require("../middleware/auth");
 router.get(
   "/admin",
   protect,
-  adminOnly,
+  adminOnly(),
   advancedQuery(Comment),
   getAllComments
 );
@@ -27,7 +27,7 @@ router
 
 router
   .route("/:id")
-  .put(protect, adminOnly, updateComment)
+  .put(protect, adminOnly(), updateComment)
   .delete(protect, deleteComment);
 
 module.exports = router;
