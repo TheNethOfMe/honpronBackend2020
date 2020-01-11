@@ -23,26 +23,50 @@ exports.createEntry = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/entries/:id
 // @access  Public
 exports.getEntry = asyncHandler(async (req, res, next) => {
-  const entry = await Entry.findById(req.params.id).populate({
-    path: "gameList",
-    select: "list"
-  });
+  let entry = await Entry.findById(req.params.id).populate([
+    {
+      path: "comments",
+      match: { isApproved: true },
+      populate: {
+        path: "user",
+        select: "name"
+      }
+    },
+    {
+      path: "gameList",
+      select: "list"
+    }
+  ]);
   if (!entry) {
     return next(
       new ErrorResponse(`Entry not found with id of ${req.params.id}`, 404)
     );
   }
+  let result = {
+    ...entry._doc
+  };
+
   if (entry.gameList) {
-    let result = { ...entry._doc };
     delete result.gameList;
     const formattedList = getFormattedGameList(
       entry.gameList.list,
       entry.episode
     );
     result.formattedList = formattedList;
-    return res.status(200).json({ success: true, data: result });
   }
-  res.status(200).json({ success: true, data: entry });
+  if (entry.comments) {
+    delete result.comments;
+    const commentList = entry.comments.map(comment => {
+      return {
+        id: comment._id,
+        user: comment.user.name,
+        text: comment.text,
+        dateAdded: comment.dateAdded
+      };
+    });
+    result.comments = commentList;
+  }
+  res.status(200).json({ success: true, data: result });
 });
 
 // @desc    Update one Entry

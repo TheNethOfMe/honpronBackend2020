@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const fileupload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 const path = require("path");
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
@@ -18,12 +19,15 @@ const menu = require("./routes/menu");
 const auth = require("./routes/auth");
 const users = require("./routes/users");
 const gamelist = require("./routes/gamelist");
+const tickets = require("./routes/tickets");
+const comments = require("./routes/comments");
 
 const app = express();
 app.use(express.json());
 
-// File uploading
+// Middleware npm packages
 app.use(fileupload());
+app.use(cookieParser());
 
 // Set static folder
 app.use(express.static(path.join(__dirname, "public")));
@@ -35,6 +39,8 @@ app.use("/api/v1/menu", menu);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/users", users);
 app.use("/api/v1/gamelist", gamelist);
+app.use("/api/v1/tickets", tickets);
+app.use("/api/v1/comments", comments);
 
 app.use(errorHandler);
 

@@ -69,14 +69,16 @@ exports.advancedQuery = model => async (req, res, next) => {
   if (req.query.search) {
     queryObj.games = { $regex: req.query.search, $options: "i" };
   }
-  console.log("Hi", queryObj);
   query = model.find(queryObj);
 
   // Add select and sort to query where applicable
   const selectAndSort = formatSelectAndSort(req.query.select, req.query.sort);
-  if (selectAndSort.select) {
-    query = query.select(selectAndSort.select);
-  }
+  // if (selectAndSort.select) {
+  //   query = query.select(selectAndSort.select);
+  // }
+  query = query.select(
+    `-blog${!!selectAndSort.select ? " " + selectAndSort.select : ""}`
+  );
   query = query.sort(selectAndSort.sort);
 
   // Pagination

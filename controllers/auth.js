@@ -4,12 +4,17 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
 const sendEmail = require("../utils/sendEmail");
 const sendTokenResponse = require("../utils/sendTokenResponse");
+const colorCoding = require("../utils/colorCoding");
 
 // @desc    Register User
 // @route   POST /api/v1/auth/register
 // @access  Public
 exports.register = asyncHandler(async (req, res, next) => {
   // TODO: Impliment whitelist and check to make sure user's email is on it
+  const code = colorCoding(req.body.name);
+  if (code !== "blue") {
+    return next(new ErrorResponse("That username is not available.", 400));
+  }
   const { name, email, password } = req.body;
   const user = await User.create({
     name,
@@ -35,6 +40,10 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!user) {
     return next(new ErrorResponse("Invalid credentials.", 401));
   }
+  // Make sure user is not blocked
+  if (user.status === "blocked") {
+    return next(new ErrorResponse("Your credentials have been revoked.", 401));
+  }
   // Check for password
   const isMatch = await user.matchPassword(password);
   if (!isMatch) {
@@ -46,8 +55,8 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @desc    Logout currently logged in user
 // @route   GET /api/v1/auth/logout
 // @access  Private
-exports.getMe = asyncHandler(async (req, res, next) => {
-  res.cookie("token", "none", {
+exports.logout = asyncHandler(async (req, res, next) => {
+  res.cookie("hpToken", "none", {
     expires: new Date(Date.now + 10 * 1000),
     httpOnly: true
   });
@@ -57,7 +66,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @desc    Get current logged in user
 // @route   GET /api/v1/auth/me
 // @access  Private
-exports.logout = asyncHandler(async (req, res, next) => {
+exports.getMe = asyncHandler(async (req, res, next) => {
   const user = {
     name: req.user.name,
     email: req.user.email
@@ -69,6 +78,10 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/auth/updatedetails
 // @access  Private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
+  const code = colorCoding(req.body.name);
+  if (code !== "blue") {
+    return next(new ErrorResponse("That username is not available.", 400));
+  }
   const fieldsToUpdate = {
     name: req.body.name,
     email: req.body.email
@@ -84,6 +97,7 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/auth/updatepassword
 // @access  Private
 exports.updatePassword = asyncHandler(async (req, res, next) => {
+  console.log("hit");
   const user = await User.findById(req.user.id).select("+password");
   // Check current password
   if (!(await user.matchPassword(req.body.currentPassword))) {
@@ -100,8 +114,8 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-  if (!user) {
-    return next(new ErrorResponse("No user with that email.", 404));
+  if (!user || user.status === "blocked") {
+    return next(new ErrorResponse("Invalid email.", 404));
   }
   // Get reset token
   const resetToken = user.getResetPasswordToken();
