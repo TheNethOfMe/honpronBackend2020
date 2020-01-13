@@ -30,7 +30,6 @@ exports.getMyComments = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.createComment = asyncHandler(async (req, res, next) => {
   let colorCode;
-  console.log(req.user);
   if (req.user.status === "blacklisted") {
     colorCode = "black";
   } else {

@@ -35,6 +35,10 @@ exports.getEntry = asyncHandler(async (req, res, next) => {
     {
       path: "gameList",
       select: "list"
+    },
+    {
+      path: "series",
+      select: "seriesName"
     }
   ]);
   if (!entry) {

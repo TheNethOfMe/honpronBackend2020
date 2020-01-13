@@ -11,10 +11,6 @@ const colorCoding = require("../utils/colorCoding");
 // @access  Public
 exports.register = asyncHandler(async (req, res, next) => {
   // TODO: Impliment whitelist and check to make sure user's email is on it
-  const code = colorCoding(req.body.name);
-  if (code !== "blue") {
-    return next(new ErrorResponse("That username is not available.", 400));
-  }
   const { name, email, password } = req.body;
   const user = await User.create({
     name,
@@ -35,6 +31,8 @@ exports.login = asyncHandler(async (req, res, next) => {
       new ErrorResponse("Please enter your email and password.", 400)
     );
   }
+  // Force email to lowercase characters for consistancy
+  req.body.email = req.body.email.toLowerCase();
   // Check for user
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
@@ -78,10 +76,6 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/auth/updatedetails
 // @access  Private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
-  const code = colorCoding(req.body.name);
-  if (code !== "blue") {
-    return next(new ErrorResponse("That username is not available.", 400));
-  }
   const fieldsToUpdate = {
     name: req.body.name,
     email: req.body.email
@@ -97,7 +91,6 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/auth/updatepassword
 // @access  Private
 exports.updatePassword = asyncHandler(async (req, res, next) => {
-  console.log("hit");
   const user = await User.findById(req.user.id).select("+password");
   // Check current password
   if (!(await user.matchPassword(req.body.currentPassword))) {
@@ -113,6 +106,8 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/auth/forgotpassword
 // @access  Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  // Force email to lowercase characters for consistancy
+  req.body.email = req.body.email.toLowerCase();
   const user = await User.findOne({ email: req.body.email });
   if (!user || user.status === "blocked") {
     return next(new ErrorResponse("Invalid email.", 404));

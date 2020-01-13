@@ -2,6 +2,8 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const colorCoding = require("../utils/colorCoding");
+const ErrorResponse = require("../utils/errorResponse");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -36,6 +38,21 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+});
+
+// Force email addresses to lowercase for consitancy
+UserSchema.pre("save", function(next) {
+  this.email = this.email.toLowerCase();
+  next();
+});
+
+// Make sure username is acceptable
+UserSchema.pre("save", function(next) {
+  const code = colorCoding(this.name);
+  if (code !== "blue") {
+    return next(new ErrorResponse("That username is not available.", 400));
+  }
+  next();
 });
 
 // Encrypt password on save unless password is not modified

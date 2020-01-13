@@ -73,12 +73,9 @@ exports.advancedQuery = model => async (req, res, next) => {
 
   // Add select and sort to query where applicable
   const selectAndSort = formatSelectAndSort(req.query.select, req.query.sort);
-  // if (selectAndSort.select) {
-  //   query = query.select(selectAndSort.select);
-  // }
-  query = query.select(
-    `-blog${!!selectAndSort.select ? " " + selectAndSort.select : ""}`
-  );
+  if (selectAndSort.select) {
+    query = query.select(selectAndSort.select);
+  }
   query = query.sort(selectAndSort.sort);
 
   // Pagination
@@ -105,6 +102,78 @@ exports.advancedQuery = model => async (req, res, next) => {
   next();
 };
 
+// Returns entries with series name and comment count
+exports.advancedEntries = () => async (req, res, next) => {
+  let query;
+  let queryObj;
+
+  // Copy request query and remove certain fields
+  const reqQuery = { ...req.query };
+  removeFields.forEach(param => delete reqQuery[param]);
+
+  // Construct query
+  queryObj = formatQuery(reqQuery, req.query.search);
+  if (req.query.search) {
+    queryObj.games = { $regex: req.query.search, $options: "i" };
+  }
+  query = Entry.find(queryObj);
+
+  // Add select and sort, do not include blog data in multi-entry search
+  const selectAndSort = formatSelectAndSort(req.query.select, req.query.sort);
+  query = query.select(
+    `-blog${!!selectAndSort.select ? " " + selectAndSort.select : ""}`
+  );
+  query = query.sort(selectAndSort.sort);
+
+  // Pagination
+  const pageData = await createPaginationData(
+    req.query.page,
+    req.query.limit,
+    queryObj,
+    Entry
+  );
+  query = query
+    .skip(pageData.startIndex)
+    .limit(pageData.limit)
+    .populate([
+      {
+        path: "series",
+        select: "seriesName"
+      },
+      {
+        path: "comments",
+        match: { isApproved: true },
+        select: "user"
+      }
+    ]);
+
+  // Execute query
+  const results = await query;
+  const formattedResults = results.map(entry => {
+    let formatted = { ...entry._doc };
+    delete formatted.comments;
+    delete formatted.series;
+    formatted.comments = entry.comments.length;
+    formatted.series = {
+      series: entry.series.seriesName,
+      seriesId: entry.series._id
+    };
+    return formatted;
+  });
+
+  // Pagination result
+  const pagination = returnPagination(pageData);
+
+  res.advancedData = {
+    success: true,
+    count: results.length,
+    pagination,
+    data: formattedResults
+  };
+  next();
+};
+
+// Returns one series and queries entries within series
 exports.advancedSeries = () => async (req, res, next) => {
   // Copy request query and remove certain fields
   const reqQuery = { ...req.query };
