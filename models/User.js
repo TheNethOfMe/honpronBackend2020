@@ -40,23 +40,30 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// Force email addresses to lowercase for consitancy
-UserSchema.pre("save", function(next) {
+UserSchema.pre("save", async function(next) {
+  // Force email addresses to lowercase for consitancy
   this.email = this.email.toLowerCase();
-  next();
-});
-
-// Make sure username is acceptable
-UserSchema.pre("save", function(next) {
+  // Ensure user is on the whitelist
+  const whiteListed = await this.model("Whitelist").findOneAndUpdate(
+    {
+      email: this.email
+    },
+    { isActivated: true }
+  );
+  if (!whiteListed) {
+    return next(
+      new ErrorResponse(
+        "Sorry, but you must be on the list to set up an account.",
+        403
+      )
+    );
+  }
+  // Make sure username is acceptable
   const code = colorCoding(this.name);
   if (code !== "blue") {
     return next(new ErrorResponse("That username is not available.", 400));
   }
-  next();
-});
-
-// Encrypt password on save unless password is not modified
-UserSchema.pre("save", async function(next) {
+  // Encrypt password on save unless password is not modified
   if (!this.isModified("password")) {
     next();
   }

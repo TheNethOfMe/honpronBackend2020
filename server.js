@@ -18,6 +18,7 @@ dotenv.config({ path: "./config/config.env" });
 connectDB();
 
 // Route files
+const whitelist = require("./routes/whitelist");
 const entries = require("./routes/entries");
 const series = require("./routes/series");
 const menu = require("./routes/menu");
@@ -50,6 +51,7 @@ app.use(limiter);
 app.use(express.static(path.join(__dirname, "public")));
 
 // Mount routers
+app.use("/api/v1/whitelist", whitelist);
 app.use("/api/v1/entries", entries);
 app.use("/api/v1/series", series);
 app.use("/api/v1/menu", menu);
