@@ -1,6 +1,7 @@
 const Comment = require("../models/Comment");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
+const colorCoding = require("../utils/colorCoding");
 
 // @desc    Get all Comments
 // @route   GET /api/v1/comments/admin
@@ -28,12 +29,19 @@ exports.getMyComments = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/entries/:entryId/comment
 // @access  Private
 exports.createComment = asyncHandler(async (req, res, next) => {
+  let colorCode;
+  console.log(req.user);
+  if (req.user.status === "blacklisted") {
+    colorCode = "black";
+  } else {
+    colorCode = colorCoding(req.body.text);
+  }
   const comment = {
     text: req.body.text,
     entry: req.params.entryId,
     user: req.user.id
   };
-  await Comment.create(comment);
+  await Comment.create({ colorCode, ...comment });
   res.status(201).json({ success: true, data: comment });
 });
 

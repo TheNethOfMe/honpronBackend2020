@@ -23,6 +23,10 @@ const CommentSchema = new mongoose.Schema({
   isApproved: {
     type: Boolean,
     default: false
+  },
+  colorCode: {
+    type: String,
+    enum: ["blue", "yellow", "red", "black"]
   }
 });
 
