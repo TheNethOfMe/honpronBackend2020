@@ -73,6 +73,12 @@ EntrySchema.virtual("comments", {
   justOne: false
 });
 
+// cascade delete comments for entry when entry is deleted
+EntrySchema.pre("remove", async function(next) {
+  await this.model("Comment").deleteMany({ entry: this._id });
+  next();
+});
+
 module.exports = mongoose.model("Entry", EntrySchema);
 
 // TODO: favs (may break out into it's own model)

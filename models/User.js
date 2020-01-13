@@ -2,6 +2,8 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const colorCoding = require("../utils/colorCoding");
+const ErrorResponse = require("../utils/errorResponse");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -38,8 +40,30 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// Encrypt password on save unless password is not modified
 UserSchema.pre("save", async function(next) {
+  // Force email addresses to lowercase for consitancy
+  this.email = this.email.toLowerCase();
+  // Ensure user is on the whitelist
+  const whiteListed = await this.model("Whitelist").findOneAndUpdate(
+    {
+      email: this.email
+    },
+    { isActivated: true }
+  );
+  if (!whiteListed) {
+    return next(
+      new ErrorResponse(
+        "Sorry, but you must be on the list to set up an account.",
+        403
+      )
+    );
+  }
+  // Make sure username is acceptable
+  const code = colorCoding(this.name);
+  if (code !== "blue") {
+    return next(new ErrorResponse("That username is not available.", 400));
+  }
+  // Encrypt password on save unless password is not modified
   if (!this.isModified("password")) {
     next();
   }
@@ -72,5 +96,11 @@ UserSchema.methods.getResetPasswordToken = function() {
   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };
+
+// Set comments to undefined user when user gets deleted
+UserSchema.pre("remove", async function(next) {
+  await this.model("Comment").deleteMany({ user: this._id });
+  next();
+});
 
 module.exports = mongoose.model("User", UserSchema);

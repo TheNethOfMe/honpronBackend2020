@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config/config.env" });
 
 // Load models
+const WhiteList = require("./models/Whitelist");
 const Comment = require("./models/Comment");
 const Entry = require("./models/Entry");
 const GameList = require("./models/GameList");
@@ -23,6 +24,9 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 // Get Data
+const whitelist = JSON.parse(
+  fs.readFileSync(`${__dirname}/_data/whitelist.json`)
+);
 const comments = JSON.parse(
   fs.readFileSync(`${__dirname}/_data/comments.json`)
 );
@@ -41,10 +45,11 @@ const users = JSON.parse(fs.readFileSync(`${__dirname}/_data/users.json`));
 // import into db
 const importData = async () => {
   try {
+    await WhiteList.create(whitelist);
     await User.create(users);
+    await Series.create(series);
     await Entry.create(podcasts);
     await Entry.create(fake);
-    await Series.create(series);
     await Menu.create(menu);
     await GameList.create(gameList);
     await Ticket.create(tickets);
@@ -66,6 +71,7 @@ const deleteData = async () => {
     await User.deleteMany();
     await Ticket.deleteMany();
     await Comment.deleteMany();
+    await WhiteList.deleteMany();
     console.log("Data destroyed...");
     process.exit();
   } catch (err) {

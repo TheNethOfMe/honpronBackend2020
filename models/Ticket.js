@@ -6,7 +6,10 @@ const TicketSchema = new mongoose.Schema({
     type: String,
     default: "(No Default)"
   },
-  topic: String,
+  topic: {
+    type: String,
+    default: "Other"
+  },
   text: {
     type: String,
     required: [true, "You must enter text to send a message."]
@@ -22,7 +25,8 @@ const TicketSchema = new mongoose.Schema({
   closed: {
     type: Boolean,
     default: false
-  }
+  },
+  author: String
 });
 
 TicketSchema.pre("save", async function(next) {

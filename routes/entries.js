@@ -9,8 +9,8 @@ const {
   entryPhotoUpload
 } = require("../controllers/entries");
 
-const Entry = require("../models/Entry");
-const { advancedQuery } = require("../middleware/advancedQuery");
+// const Entry = require("../models/Entry");
+const { advancedEntries } = require("../middleware/advancedQuery");
 const { protect, adminOnly } = require("../middleware/auth");
 
 const commentRouter = require("./comments");
@@ -20,7 +20,7 @@ router.route("/:id/photo").put(protect, adminOnly(), entryPhotoUpload);
 
 router
   .route("/")
-  .get(advancedQuery(Entry), getEntries)
+  .get(advancedEntries(), getEntries)
   .post(protect, adminOnly(), createEntry);
 
 router
