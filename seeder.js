@@ -42,9 +42,9 @@ const users = JSON.parse(fs.readFileSync(`${__dirname}/_data/users.json`));
 const importData = async () => {
   try {
     await User.create(users);
+    await Series.create(series);
     await Entry.create(podcasts);
     await Entry.create(fake);
-    await Series.create(series);
     await Menu.create(menu);
     await GameList.create(gameList);
     await Ticket.create(tickets);

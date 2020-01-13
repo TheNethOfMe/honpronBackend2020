@@ -90,4 +90,10 @@ UserSchema.methods.getResetPasswordToken = function() {
   return resetToken;
 };
 
+// Set comments to undefined user when user gets deleted
+UserSchema.pre("remove", async function(next) {
+  await this.model("Comment").deleteMany({ user: this._id });
+  next();
+});
+
 module.exports = mongoose.model("User", UserSchema);

@@ -93,12 +93,13 @@ exports.updateEntry = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/entries/:id
 // @access  Private/Admin
 exports.deleteEntry = asyncHandler(async (req, res, next) => {
-  const entry = await Entry.findByIdAndDelete(req.params.id);
+  const entry = await Entry.findById(req.params.id);
   if (!entry) {
     return next(
       new ErrorResponse(`Entry not found with id of ${req.params.id}`, 404)
     );
   }
+  entry.remove();
   res.status(200).json({ success: true, data: {} });
 });
 
