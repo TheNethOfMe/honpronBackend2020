@@ -26,6 +26,7 @@ const users = require("./routes/users");
 const gamelist = require("./routes/gamelist");
 const tickets = require("./routes/tickets");
 const comments = require("./routes/comments");
+const faqs = require("./routes/faqs");
 
 const app = express();
 app.use(express.json());
@@ -43,6 +44,7 @@ const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 100
 });
+app.use(limiter);
 
 // Set static folder
 app.use(express.static(path.join(__dirname, "public")));
@@ -56,6 +58,7 @@ app.use("/api/v1/users", users);
 app.use("/api/v1/gamelist", gamelist);
 app.use("/api/v1/tickets", tickets);
 app.use("/api/v1/comments", comments);
+app.use("/api/v1/faqs", faqs);
 
 app.use(errorHandler);
 
