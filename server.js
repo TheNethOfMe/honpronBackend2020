@@ -1,5 +1,6 @@
 const path = require("path");
 const express = require("express");
+const cors = require("cors");
 const dotenv = require("dotenv");
 const fileupload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
@@ -32,6 +33,13 @@ const faqs = require("./routes/faqs");
 const app = express();
 app.use(express.json());
 
+// Logger (for testing only)
+const logger = (req, res, next) => {
+  console.log("Hello", req.headers);
+  next();
+}
+app.use(logger);
+
 // Middleware npm packages
 app.use(fileupload());
 app.use(cookieParser());
@@ -39,6 +47,12 @@ app.use(mongoSanitize());
 app.use(helmet());
 app.use(xss());
 app.use(hpp());
+
+// Enable CORS
+const corsOptions = {
+  origin: process.env.CORS_WHITELIST
+}
+app.use(cors());
 
 // rate limiting
 const limiter = rateLimit({

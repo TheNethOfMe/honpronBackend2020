@@ -54,6 +54,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/auth/logout
 // @access  Private
 exports.logout = asyncHandler(async (req, res, next) => {
+  console.log(req.headers.cookie);
   res.cookie("hpToken", "none", {
     expires: new Date(Date.now + 10 * 1000),
     httpOnly: true
